@@ -6,6 +6,7 @@ class AuthForm extends StatefulWidget {
     String userName,
     String password,
     bool isLogin,
+    BuildContext ctx,
   ) submitAuthForm;
 
   AuthForm(this.submitAuthForm);
@@ -32,6 +33,7 @@ class _AuthFormState extends State<AuthForm> {
         _userName,
         _userPassword,
         _isLogIn,
+        context,
       );
     }
   }
@@ -62,7 +64,8 @@ class _AuthFormState extends State<AuthForm> {
                     }
                   },
                   onSaved: (value) {
-                    _userEmail = value;
+                    _userEmail = value.trim();
+                    // trim to remove white space
                   },
                 ),
                 if (!_isLogIn)
@@ -79,7 +82,7 @@ class _AuthFormState extends State<AuthForm> {
                       }
                     },
                     onSaved: (value) {
-                      _userName = value;
+                      _userName = value.trim();
                     },
                   ),
                 TextFormField(
@@ -96,7 +99,7 @@ class _AuthFormState extends State<AuthForm> {
                   },
                   obscureText: true,
                   onSaved: (value) {
-                    _userPassword = value;
+                    _userPassword = value.trim();
                   },
                 ),
                 SizedBox(height: 12),
