@@ -6,6 +6,26 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
+  String _userEmail = '';
+  String _userName = '';
+  String _userPassword = '';
+  var _isLogIn = true;
+  final _formKey = GlobalKey<FormState>();
+
+  void _trySubmit() {
+    final isValid = _formKey.currentState.validate();
+    //for closing soft keyboard
+    FocusScope.of(context).unfocus();
+
+    if (isValid) {
+      _formKey.currentState.save();
+      print(_userEmail);
+      print(_userName);
+      print(_userPassword);
+      // Use those value to send our auth request to firebase
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -14,36 +34,79 @@ class _AuthFormState extends State<AuthForm> {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(16),
           child: Form(
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
+                  key: ValueKey("email"),
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: "Email address",
                   ),
+                  validator: (value) {
+                    if (value.isEmpty || !value.contains('@')) {
+                      return "Please eneter a valid email address";
+                    } else {
+                      return null;
+                    }
+                  },
+                  onSaved: (value) {
+                    _userEmail = value;
+                  },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Username",
+                if (!_isLogIn)
+                  TextFormField(
+                    key: ValueKey("useName"),
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty || value.length < 4) {
+                        return "Please enter at lest 4 Characters";
+                      } else {
+                        return null;
+                      }
+                    },
+                    onSaved: (value) {
+                      _userName = value;
+                    },
                   ),
-                ),
                 TextFormField(
+                  key: ValueKey("password"),
                   decoration: InputDecoration(
                     labelText: "Password",
                   ),
+                  validator: (value) {
+                    if (value.isEmpty || value.length < 7) {
+                      return "Passowrd is too small";
+                    } else {
+                      return null;
+                    }
+                  },
                   obscureText: true,
+                  onSaved: (value) {
+                    _userPassword = value;
+                  },
                 ),
                 SizedBox(height: 12),
                 RaisedButton(
-                  child: Text("Login"),
-                  onPressed: () {},
+                  child: Text(_isLogIn ? "Login" : "Sign Up"),
+                  onPressed: () {
+                    _trySubmit();
+                  },
                 ),
                 FlatButton(
                   textColor: Theme.of(context).primaryColor,
-                  child: Text("Create new Account"),
-                  onPressed: () {},
-                )
+                  child: Text(_isLogIn
+                      ? "Create new Account"
+                      : "I alredy have an account"),
+                  onPressed: () {
+                    setState(() {
+                      _isLogIn = !_isLogIn;
+                    });
+                  },
+                ),
               ],
             ),
           ),
