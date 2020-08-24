@@ -18,7 +18,7 @@ service cloud.firestore {
     // any authenticated user can acess chats for reading purpose only
     }
     
-    match /chats/{document=**}{
+    match /chat/{document=**}{
     allow read,create:if request.auth != null
     // any authenticated user can read chats in chats document
     }
