@@ -17,7 +17,7 @@ class _NewMessageState extends State<NewMessage> {
     //sending message to firestore
     Firestore.instance.collection('chat').add({
       "text": _enteredMessage,
-      "createdAt":Timestamp.now(),
+      "createdAt": Timestamp.now(),
     });
     //clearing textfield
     _controllerText.clear();
