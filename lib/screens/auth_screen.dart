@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../widgets/auth/auth_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,8 +16,8 @@ class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   AuthResult authResult; // for getting response from firebase
 
-  void _submitAuthForm(String email, String userName, String password,
-      bool isLogin, BuildContext ctx) async {
+  void _submitAuthForm(File image, String email, String userName,
+      String password, bool isLogin, BuildContext ctx) async {
     try {
       setState(() {
         _isLoading = true;
@@ -26,6 +28,16 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+        //uploading image
+        //getting path of file in bucket
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child(authResult.user.uid + '.jpg');
+
+        //uploading path
+        await ref.putFile(image).onComplete;
+
         //storing user name once we signed up
         await Firestore.instance
             .collection('users')
@@ -61,7 +73,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: AuthForm(_submitAuthForm,_isLoading),
+      body: AuthForm(_submitAuthForm, _isLoading),
     );
   }
 }
