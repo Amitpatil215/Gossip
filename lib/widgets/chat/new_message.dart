@@ -25,6 +25,7 @@ class _NewMessageState extends State<NewMessage> {
       "createdAt": Timestamp.now(),
       "userId": user.uid,
       "userName": userData['username'],
+      "userImage": userData['imageUrl'],
     });
     //clearing textfield
     _controllerText.clear();
