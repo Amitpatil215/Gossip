@@ -38,6 +38,8 @@ class _AuthScreenState extends State<AuthScreen> {
         //uploading path
         await ref.putFile(image).onComplete;
 
+        //geting image url for easy acess
+        final imageUrl = await ref.getDownloadURL();
         //storing user name once we signed up
         await Firestore.instance
             .collection('users')
@@ -45,6 +47,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .setData({
           'username': userName,
           'email': email,
+          'imageUrl': imageUrl,
         });
       }
     } on PlatformException catch (error) {
