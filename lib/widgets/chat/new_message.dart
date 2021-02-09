@@ -16,11 +16,13 @@ class _NewMessageState extends State<NewMessage> {
     // for changing focus and popoing keyboard
     FocusScope.of(context).unfocus();
 
-    final user = await FirebaseAuth.instance.currentUser();
-    final userData =
-        await Firestore.instance.collection('users').document(user.uid).get();
+    final user = await FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
     //sending message to firestore
-    Firestore.instance.collection('chat').add({
+    FirebaseFirestore.instance.collection('chat').add({
       "text": _enteredMessage,
       "createdAt": Timestamp.now(),
       "userId": user.uid,

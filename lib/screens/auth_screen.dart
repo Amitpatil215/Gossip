@@ -14,7 +14,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   var _isLoading = false;
   final _auth = FirebaseAuth.instance;
-  AuthResult authResult; // for getting response from firebase
+  var authResult; // for getting response from firebase
 
   void _submitAuthForm(File image, String email, String userName,
       String password, bool isLogin, BuildContext ctx) async {
@@ -36,15 +36,15 @@ class _AuthScreenState extends State<AuthScreen> {
             .child(authResult.user.uid + '.jpg');
 
         //uploading path
-        await ref.putFile(image).onComplete;
+        await ref.putFile(image);
 
         //geting image url for easy acess
         final imageUrl = await ref.getDownloadURL();
         //storing user name once we signed up
-        await Firestore.instance
+        await FirebaseFirestore.instance
             .collection('users')
-            .document(authResult.user.uid)
-            .setData({
+            .doc(authResult.user.uid)
+            .set({
           'username': userName,
           'email': email,
           'imageUrl': imageUrl,
